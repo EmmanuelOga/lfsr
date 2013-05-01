@@ -1,0 +1,21 @@
+require 'benchmark'
+require 'lfsr/pure'
+require 'lfsr/fast'
+
+TIMES = 500_000
+
+puts "Bits\t| Pure\t| C ext\t| rand\t| Vs P.\t| Vs rand"
+
+2.upto(32) do |bits|
+  max = (1 << (bits - 1))+1
+
+  l = LFSR::Fast.const_get("Size#{bits}").new(max)
+  ext = Benchmark.realtime do TIMES.times {l.next_i} end
+
+  l = LFSR::Pure.const_get("Size#{bits}").new(max)
+  pure = Benchmark.realtime do TIMES.times {l.next_i} end
+
+  randt = Benchmark.realtime do TIMES.times {rand(max)} end
+
+  puts sprintf(" #{bits}\t| %.2fs\t| %.2fs\t| %.2fs\t| %.1fX\t| %.1fX",  pure, ext, randt, pure/ext, randt/ext)
+end

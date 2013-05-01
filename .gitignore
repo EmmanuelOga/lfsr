@@ -1,0 +1,4 @@
+tmp/
+.idea/
+pkg/
+lib/lfsr.so
